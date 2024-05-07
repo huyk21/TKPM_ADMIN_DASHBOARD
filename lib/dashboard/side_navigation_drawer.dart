@@ -65,7 +65,7 @@ class _SideNavigationDrawerState extends State<SideNavigationDrawer>
           AdminMenuItem(
             title: "Dashboard",
             route: TripsPage.id,
-            icon: CupertinoIcons.chart_bar,
+            icon: CupertinoIcons.chart_bar_fill,
           ),
           AdminMenuItem(
             title: "Drivers",
