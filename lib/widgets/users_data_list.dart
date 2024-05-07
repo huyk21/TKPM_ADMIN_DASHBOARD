@@ -124,6 +124,49 @@ class _UsersDataListState extends State<UsersDataList>
                   ),
                 ),
 
+                cMethods.data(
+                  1,
+                  itemsList[index]["isTongDai"] == "no" ?
+                  ElevatedButton(
+                    onPressed: () async
+                    {
+                      await FirebaseDatabase.instance.ref()
+                          .child("users")
+                          .child(itemsList[index]["id"])
+                          .update(
+                          {
+                            "isTongDai": "yes",
+                          });
+                    },
+                    child: const Text(
+                      "user",
+                      style: TextStyle(
+                        color: Colors.redAccent,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  )
+                      : ElevatedButton(
+                    onPressed: () async
+                    {
+                      await FirebaseDatabase.instance.ref()
+                          .child("users")
+                          .child(itemsList[index]["id"])
+                          .update(
+                          {
+                            "isTongDai": "no",
+                          });
+                    },
+                    child: const Text(
+                      "Tong dai",
+                      style: TextStyle(
+                        color: Colors.greenAccent,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+
               ],
             );
           }),

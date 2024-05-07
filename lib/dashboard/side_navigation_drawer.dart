@@ -63,6 +63,11 @@ class _SideNavigationDrawerState extends State<SideNavigationDrawer>
       sideBar: SideBar(
         items: const [
           AdminMenuItem(
+            title: "Dashboard",
+            route: TripsPage.id,
+            icon: CupertinoIcons.chart_bar,
+          ),
+          AdminMenuItem(
             title: "Drivers",
             route: DriversPage.id,
             icon: CupertinoIcons.car_detailed,
@@ -77,6 +82,7 @@ class _SideNavigationDrawerState extends State<SideNavigationDrawer>
             route: TripsPage.id,
             icon: CupertinoIcons.location_fill,
           ),
+
         ],
         selectedRoute: DriversPage.id,
         onSelected: (selectedPage)

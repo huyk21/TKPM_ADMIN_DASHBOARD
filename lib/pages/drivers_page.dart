@@ -45,7 +45,6 @@ class _DriversPageState extends State<DriversPage>
               Row(
                 children: [
                   cMethods.header(2, "DRIVER ID"),
-                  cMethods.header(1, "PICTURE"),
                   cMethods.header(1, "NAME"),
                   cMethods.header(1, "CAR DETAILS"),
                   cMethods.header(1, "PHONE"),

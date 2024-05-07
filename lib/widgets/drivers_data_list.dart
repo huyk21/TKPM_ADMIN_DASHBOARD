@@ -68,15 +68,6 @@ class _DriversDataListState extends State<DriversDataList>
 
                 cMethods.data(
                   1,
-                  Image.network(
-                    itemsList[index]["photo"].toString(),
-                    width: 50,
-                    height: 50,
-                  ),
-                ),
-
-                cMethods.data(
-                  1,
                   Text(itemsList[index]["name"].toString()),
                 ),
 

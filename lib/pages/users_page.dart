@@ -50,6 +50,7 @@ class _UsersPageState extends State<UsersPage>
                   cMethods.header(1, "EMAIL"),
                   cMethods.header(1, "PHONE"),
                   cMethods.header(1, "ACTION"),
+                  cMethods.header(1, "ROLE"),
                 ],
               ),
 
