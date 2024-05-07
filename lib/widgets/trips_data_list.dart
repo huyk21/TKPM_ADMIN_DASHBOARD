@@ -48,7 +48,7 @@ class _TripsDataListState extends State<TripsDataList>
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 24,
-                color: Colors.pink,
+                color: Colors.blue,
               ),
             ),
           );
@@ -130,7 +130,7 @@ class _TripsDataListState extends State<TripsDataList>
                       child: const Text(
                         "View More",
                         style: TextStyle(
-                          color: Colors.white,
+                          color: Colors.blueAccent,
                           fontWeight: FontWeight.bold,
                         ),
                       ),

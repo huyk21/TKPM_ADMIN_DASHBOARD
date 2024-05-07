@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget
       debugShowCheckedModeBanner: false,
       title: 'Admin Panel',
       theme: ThemeData(
-        primarySwatch: Colors.pink,
+        primarySwatch: Colors.blue,
       ),
       home: SideNavigationDrawer(),
     );

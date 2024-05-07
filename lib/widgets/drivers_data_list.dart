@@ -32,7 +32,7 @@ class _DriversDataListState extends State<DriversDataList>
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 24,
-                color: Colors.pink,
+                color: Colors.blue,
               ),
             ),
           );
@@ -117,7 +117,7 @@ class _DriversDataListState extends State<DriversDataList>
                     child: const Text(
                       "Block",
                       style: TextStyle(
-                        color: Colors.white,
+                        color: Colors.redAccent,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -134,9 +134,9 @@ class _DriversDataListState extends State<DriversDataList>
                           });
                     },
                     child: const Text(
-                      "Approve",
+                      "Unblock",
                       style: TextStyle(
-                        color: Colors.white,
+                        color: Colors.greenAccent,
                         fontWeight: FontWeight.bold,
                       ),
                     ),

@@ -51,7 +51,7 @@ class _SideNavigationDrawerState extends State<SideNavigationDrawer>
     return AdminScaffold(
       backgroundColor: const Color.fromRGBO(255, 255, 255, 1),
       appBar: AppBar(
-        backgroundColor: Colors.pinkAccent.shade700,
+        backgroundColor: Colors.blueAccent.shade700,
         title: const Text(
           "Admin Web Panel",
           style: TextStyle(
@@ -86,7 +86,7 @@ class _SideNavigationDrawerState extends State<SideNavigationDrawer>
         header: Container(
           height: 52,
           width: double.infinity,
-          color: Colors.pink.shade500,
+          color: Colors.blue.shade500,
           child: const Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -107,7 +107,7 @@ class _SideNavigationDrawerState extends State<SideNavigationDrawer>
         footer: Container(
           height: 52,
           width: double.infinity,
-          color: Colors.pink.shade500,
+          color: Colors.blue.shade500,
           child: const Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
