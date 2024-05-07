@@ -1,4 +1,5 @@
 import 'package:admin_dashboards/dashboard/dashboard.dart';
+import 'package:admin_dashboards/pages/dashboard_page.dart';
 import 'package:admin_dashboards/pages/drivers_page.dart';
 import 'package:admin_dashboards/pages/trips_page.dart';
 import 'package:admin_dashboards/pages/users_page.dart';
@@ -25,6 +26,11 @@ class _SideNavigationDrawerState extends State<SideNavigationDrawer>
   {
     switch(selectedPage.route)
     {
+      case DashboardPage.id:
+        setState(() {
+          chosenScreen = DashboardPage();
+        });
+        break;
       case DriversPage.id:
         setState(() {
           chosenScreen = DriversPage();
@@ -64,7 +70,7 @@ class _SideNavigationDrawerState extends State<SideNavigationDrawer>
         items: const [
           AdminMenuItem(
             title: "Dashboard",
-            route: TripsPage.id,
+            route: DashboardPage.id,
             icon: CupertinoIcons.chart_bar_fill,
           ),
           AdminMenuItem(

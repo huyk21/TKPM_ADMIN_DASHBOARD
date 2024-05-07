@@ -139,7 +139,7 @@ class _UsersDataListState extends State<UsersDataList>
                           });
                     },
                     child: const Text(
-                      "user",
+                      "User",
                       style: TextStyle(
                         color: Colors.redAccent,
                         fontWeight: FontWeight.bold,
