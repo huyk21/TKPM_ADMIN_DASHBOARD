@@ -127,7 +127,7 @@ class _TripsDataListState extends State<RevenueChart>
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(0, 5, 0, 50),
                   child: Text(
-                    'Number of trips per day (unit: \$)',
+                    'Number of trips per day',
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
