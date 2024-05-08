@@ -33,12 +33,12 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const AuthWrapper(), // Entry point to check auth status
-      routes: {
-        '/home': (context) => const SideNavigationDrawer(),
-        '/login': (context) => const LoginScreen(),
-        '/unauthorized': (context) => const UnauthorizedScreen(),
-      },
+      home: const SideNavigationDrawer(), // Entry point to check auth status
+      // routes: {
+      //   // '/home': (context) => const SideNavigationDrawer(),
+      //   // '/login': (context) => const LoginScreen(),
+      //   // '/unauthorized': (context) => const UnauthorizedScreen(),
+      // },
     );
   }
 }

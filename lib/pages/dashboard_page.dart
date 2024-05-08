@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../methods/common_methods.dart';
+import 'package:fl_chart/fl_chart.dart';
+
+import '../widgets/revenue_chart.dart';
 
 class DashboardPage extends StatefulWidget
 {
@@ -15,7 +18,6 @@ class DashboardPage extends StatefulWidget
 class _UsersPageState extends State<DashboardPage>
 {
   CommonMethods cMethods = CommonMethods();
-
 
   @override
   Widget build(BuildContext context)
@@ -43,9 +45,7 @@ class _UsersPageState extends State<DashboardPage>
                 height: 18,
               ),
 
-
-
-
+              RevenueChart(),
             ],
           ),
         ),
