@@ -19,7 +19,7 @@ class _RevenueChartState extends State<RevenueChart>
   final completedTripsRecordsFromDatabase = FirebaseDatabase.instance.ref().child("tripRequests");
   CommonMethods cMethods = CommonMethods();
 
-  List<String> comboboxSource = ['Day', 'Month', 'Year'];
+  List<String> comboboxSource = ['Day', 'Month', 'Quarter', 'Year'];
   String _selectedLineCombobox = 'Day';
   String _selectedBarCombobox = 'Day';
 
@@ -53,11 +53,12 @@ class _RevenueChartState extends State<RevenueChart>
         Map<String, double> dailyIncome = {};
         Map<String, double> monthlyIncome = {};
         Map<String, double> yearlyIncome = {};
+        Map<String, double> quarterIncome = {};
 
         Map<String, double> dailyTrips = {};
         Map<String, double> monthlyTrips = {};
         Map<String, double> yearlyTrips = {};
-
+        Map<String, double> quarterTrips = {};
 
         Map dataMap = snapshotData.data!.snapshot.value as Map;
         List itemsList = [];
@@ -68,6 +69,7 @@ class _RevenueChartState extends State<RevenueChart>
             int day = date.day;
             int month = date.month;
             int year = date.year;
+            int quarter = (date.month - 1) ~/ 3 + 1;
 
             if (dailyIncome.containsKey('$day/${month.toString().padLeft(2, '0')}/$year')) {
               double fairAmount = double.parse(value["fareAmount"]);
@@ -106,6 +108,18 @@ class _RevenueChartState extends State<RevenueChart>
               yearlyTrips ['$year'] = 1;
             }
 
+            //Quarterly
+            if (quarterIncome.containsKey('$quarter/$year')) {
+              double fairAmount = double.parse(value["fareAmount"]);
+              quarterIncome['$quarter/$year'] = (quarterIncome['$quarter/$year']! + fairAmount);
+              quarterTrips['$quarter/$year'] = quarterTrips['$quarter/$year']! + 1;
+            }
+            else {
+              double fairAmount = double.parse(value["fareAmount"]);
+              quarterIncome['$quarter/$year'] = fairAmount;
+              quarterTrips['$quarter/$year'] = 1;
+            }
+
             itemsList.add({"key": key, ...value});
           }
         });
@@ -113,6 +127,7 @@ class _RevenueChartState extends State<RevenueChart>
         List<String> dateList = dailyIncome.keys.toList();
         List<String> monthList = monthlyIncome.keys.toList();
         List<String> yearList = yearlyIncome.keys.toList();
+        List<String> quarterList = quarterIncome.keys.toList();
 
         List<double> dailyTripList = dailyTrips.values.toList();
         List<double> dailyValueList = dailyIncome.values.toList();
@@ -122,6 +137,9 @@ class _RevenueChartState extends State<RevenueChart>
 
         List<double> yearlyTripList = yearlyTrips.values.toList();
         List<double> yearhlyValueList = yearlyIncome.values.toList();
+
+        List<double> quarterTripList = quarterTrips.values.toList();
+        List<double> quarterValueList = quarterIncome.values.toList();
 
         List<double> lineChartData = dailyTripList;
         List<double> barChartData = dailyValueList;
@@ -136,6 +154,10 @@ class _RevenueChartState extends State<RevenueChart>
           lineChartData = monthlyTripList;
           lineChartTitle = monthList;
         }
+        else if (_selectedLineCombobox == 'Quarter') {
+          lineChartData = quarterTripList;
+          lineChartTitle = quarterList;
+        }
         else if (_selectedLineCombobox == 'Year') {
           lineChartData = yearlyTripList;
           lineChartTitle = yearList;
@@ -148,6 +170,10 @@ class _RevenueChartState extends State<RevenueChart>
         else if (_selectedBarCombobox == 'Month') {
           barChartData = monthlyValueList;
           barChartTitle = monthList;
+        }
+        else if (_selectedBarCombobox == 'Quarter') {
+          barChartData = quarterValueList;
+          barChartTitle = quarterList;
         }
         else if (_selectedBarCombobox == 'Year') {
           barChartData = yearhlyValueList;
