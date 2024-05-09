@@ -1,15 +1,9 @@
-import 'package:admin_dashboards/dashboard/dashboard.dart';
-import 'package:admin_dashboards/pages/dashboard_page.dart';
-import 'package:admin_dashboards/pages/drivers_page.dart';
-import 'package:admin_dashboards/pages/trips_page.dart';
-import 'package:admin_dashboards/pages/users_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_admin_scaffold/admin_scaffold.dart';
-
-//common users
-//drivers
-//admins
+import '../pages/dashboard_page.dart';
+import '../pages/trips_page.dart';
+import '../pages/users_page.dart';
 
 class SideNavigationDrawer extends StatefulWidget {
   const SideNavigationDrawer({super.key});
@@ -18,42 +12,76 @@ class SideNavigationDrawer extends StatefulWidget {
   State<SideNavigationDrawer> createState() => _SideNavigationDrawerState();
 }
 
-class _SideNavigationDrawerState extends State<SideNavigationDrawer>
-{
-  Widget chosenScreen = Dashboard();
+class _SideNavigationDrawerState extends State<SideNavigationDrawer> {
+  static const String logoutRoute = '/logout'; // New logout route
+  Widget chosenScreen = const DashboardPage();
 
-  sendAdminTo(selectedPage)
-  {
-    switch(selectedPage.route)
-    {
+  // Method to confirm logging out
+  void showLogoutConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirm Logout'),
+          content: const Text('Are you sure you want to log out?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close dialog without doing anything
+              },
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                logOutUser(context);
+              },
+              child: const Text('Yes, Log Out'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // Perform the logout action
+  void logOutUser(BuildContext context) {
+    // Clear any relevant state here
+    print('User logged out. Clearing session data...');
+
+    // Close the dialog
+    Navigator.of(context).pop();
+
+    // Navigate to login page (adjust the route to your login page)
+    Navigator.of(context).pushReplacementNamed('/login');
+
+  }
+
+  void sendAdminTo(selectedPage) {
+    switch (selectedPage.route) {
       case DashboardPage.id:
         setState(() {
-          chosenScreen = DashboardPage();
-        });
-        break;
-      case DriversPage.id:
-        setState(() {
-          chosenScreen = DriversPage();
+          chosenScreen = const DashboardPage();
         });
         break;
 
       case UsersPage.id:
         setState(() {
-          chosenScreen = UsersPage();
+          chosenScreen = const UsersPage();
         });
         break;
-
       case TripsPage.id:
         setState(() {
-          chosenScreen = TripsPage();
+          chosenScreen = const TripsPage();
         });
+        break;
+      case logoutRoute:
+        showLogoutConfirmationDialog(context); // Show logout confirmation dialog
         break;
     }
   }
 
   @override
-  Widget build(BuildContext context)
-  {
+  Widget build(BuildContext context) {
     return AdminScaffold(
       backgroundColor: const Color.fromRGBO(255, 255, 255, 1),
       appBar: AppBar(
@@ -73,11 +101,7 @@ class _SideNavigationDrawerState extends State<SideNavigationDrawer>
             route: DashboardPage.id,
             icon: CupertinoIcons.chart_bar_fill,
           ),
-          AdminMenuItem(
-            title: "Drivers",
-            route: DriversPage.id,
-            icon: CupertinoIcons.car_detailed,
-          ),
+
           AdminMenuItem(
             title: "Users",
             route: UsersPage.id,
@@ -88,11 +112,14 @@ class _SideNavigationDrawerState extends State<SideNavigationDrawer>
             route: TripsPage.id,
             icon: CupertinoIcons.location_fill,
           ),
-
+          AdminMenuItem(
+            title: "Log Out",
+            route: logoutRoute,
+            icon: Icons.logout,
+          ),
         ],
-        selectedRoute: DriversPage.id,
-        onSelected: (selectedPage)
-        {
+        selectedRoute: DashboardPage.id,
+        onSelected: (selectedPage) {
           sendAdminTo(selectedPage);
         },
         header: Container(
