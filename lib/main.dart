@@ -34,11 +34,11 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: const SideNavigationDrawer(), // Entry point to check auth status
-      // routes: {
-      //   // '/home': (context) => const SideNavigationDrawer(),
-      //   // '/login': (context) => const LoginScreen(),
-      //   // '/unauthorized': (context) => const UnauthorizedScreen(),
-      // },
+      routes: const {
+      // '/home': (context) => const SideNavigationDrawer(),
+      //'/login': (context) => LoginScreen(),
+      // '/unauthorized': (context) => const UnauthorizedScreen(),
+     },
     );
   }
 }
@@ -80,7 +80,7 @@ class AuthWrapper extends StatelessWidget {
           );
         } else {
           // No user signed in, go to login screen
-          return const LoginScreen();
+          return  LoginScreen();
         }
       },
     );
@@ -92,12 +92,16 @@ class UnauthorizedScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Future.delayed(const Duration(seconds: 2), () {
+      // Redirect to login after 2 seconds
+      Navigator.of(context).pushReplacementNamed('/login');
+    });
+
     return Scaffold(
       appBar: AppBar(title: const Text('Unauthorized')),
-
       body: const Center(
         child: Text(
-          'You are not authorized to access this section.',
+          'Unauthorized access. Redirecting to login...',
           style: TextStyle(fontSize: 18, color: Colors.red),
         ),
       ),
