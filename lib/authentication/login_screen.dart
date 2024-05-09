@@ -1,10 +1,39 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import '../pages/dashboard_page.dart';
 
 class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+  LoginScreen({super.key});
+
+  // Firebase instance for authentication
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  // Login method
+  // Inside LoginScreen
+  Future<void> _login(BuildContext context, String email, String password) async {
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      // If login is successful, navigate to the home page
+      if (userCredential.user != null) {
+        Navigator.of(context).pushReplacementNamed('/home');
+      }
+    } catch (e) {
+      // Handle errors like invalid credentials
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString())),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final TextEditingController emailController = TextEditingController();
+    final TextEditingController passwordController = TextEditingController();
+
     return Scaffold(
       backgroundColor: Colors.grey[100],
       body: Center(
@@ -36,14 +65,13 @@ class LoginScreen extends StatelessWidget {
                       ),
                       SizedBox(height: 8),
                       Text(
-                        'Mange your trips, drivers, and users',
+                        'Manage your trips, drivers, and users',
                         style: TextStyle(fontSize: 16),
                       ),
                     ],
                   ),
                 ),
               ),
-
               const SizedBox(width: 16),
 
               // Right side with login form
@@ -78,31 +106,33 @@ class LoginScreen extends StatelessWidget {
                           style: TextStyle(fontSize: 14, color: Colors.grey),
                         ),
                         const SizedBox(height: 16),
-                        const TextField(
-                          decoration: InputDecoration(
+                        TextField(
+                          controller: emailController,
+                          decoration: const InputDecoration(
                             labelText: 'Email address',
                             border: OutlineInputBorder(),
                           ),
                         ),
                         const SizedBox(height: 16),
-                        const TextField(
-                          decoration: InputDecoration(
+                        TextField(
+                          controller: passwordController,
+                          decoration: const InputDecoration(
                             labelText: 'Password',
                             border: OutlineInputBorder(),
-
                           ),
                           obscureText: true,
                         ),
-
                         const SizedBox(height: 16),
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(
-                            onPressed: () {}, // Add login functionality
+                            onPressed: () {
+                              // Call the login method with input credentials
+                              _login(context, emailController.text, passwordController.text);
+                            },
                             child: const Text('Login'),
                           ),
                         ),
-
                       ],
                     ),
                   ),
