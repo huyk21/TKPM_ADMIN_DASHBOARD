@@ -9,18 +9,19 @@ class RevenueChart extends StatefulWidget {
   const RevenueChart({super.key});
 
   @override
-  State<RevenueChart> createState() => _TripsDataListState();
+  State<RevenueChart> createState() => _RevenueChartState();
 }
 
 
 
-class _TripsDataListState extends State<RevenueChart>
+class _RevenueChartState extends State<RevenueChart>
 {
   final completedTripsRecordsFromDatabase = FirebaseDatabase.instance.ref().child("tripRequests");
   CommonMethods cMethods = CommonMethods();
 
-  // final List<double> data = [5, 10, 15, 20, 25, 30];
-  // final List<String> titles = ["one", "two", "three", "four", "phat", "hello"];
+  List<String> comboboxSource = ['Day', 'Month', 'Year'];
+  String _selectedLineCombobox = 'Day';
+  String _selectedBarCombobox = 'Day';
 
   @override
   Widget build(BuildContext context)
@@ -50,7 +51,13 @@ class _TripsDataListState extends State<RevenueChart>
           );
         }
         Map<String, double> dailyIncome = {};
+        Map<String, double> monthlyIncome = {};
+        Map<String, double> yearlyIncome = {};
+
         Map<String, double> dailyTrips = {};
+        Map<String, double> monthlyTrips = {};
+        Map<String, double> yearlyTrips = {};
+
 
         Map dataMap = snapshotData.data!.snapshot.value as Map;
         List itemsList = [];
@@ -72,17 +79,100 @@ class _TripsDataListState extends State<RevenueChart>
               dailyIncome['$day/${month.toString().padLeft(2, '0')}/$year'] = fairAmount;
               dailyTrips ['$day/${month.toString().padLeft(2, '0')}/$year'] = 1;
             }
+
+
+            //Monthly
+            if (monthlyIncome.containsKey('${month.toString().padLeft(2, '0')}/$year')) {
+              double fairAmount = double.parse(value["fareAmount"]);
+              monthlyIncome['${month.toString().padLeft(2, '0')}/$year'] = (monthlyIncome['${month.toString().padLeft(2, '0')}/$year']! + fairAmount);
+              monthlyTrips ['${month.toString().padLeft(2, '0')}/$year'] = monthlyTrips ['${month.toString().padLeft(2, '0')}/$year']! + 1;
+            }
+            else {
+              double fairAmount = double.parse(value["fareAmount"]);
+              monthlyIncome['${month.toString().padLeft(2, '0')}/$year'] = fairAmount;
+              monthlyTrips ['${month.toString().padLeft(2, '0')}/$year'] = 1;
+            }
+
+
+            //Yearly
+            if (yearlyIncome.containsKey('$year')) {
+              double fairAmount = double.parse(value["fareAmount"]);
+              yearlyIncome['$year'] = (yearlyIncome['$year']! + fairAmount);
+              yearlyTrips ['$year'] = yearlyTrips ['$year']! + 1;
+            }
+            else {
+              double fairAmount = double.parse(value["fareAmount"]);
+              yearlyIncome['$year'] = fairAmount;
+              yearlyTrips ['$year'] = 1;
+            }
+
             itemsList.add({"key": key, ...value});
           }
         });
         print(dailyIncome);
         List<String> dateList = dailyIncome.keys.toList();
-        List<double> tripList = dailyTrips.values.toList();
-        List<double> valueList = dailyIncome.values.toList();
+        List<String> monthList = monthlyIncome.keys.toList();
+        List<String> yearList = yearlyIncome.keys.toList();
+
+        List<double> dailyTripList = dailyTrips.values.toList();
+        List<double> dailyValueList = dailyIncome.values.toList();
+
+        List<double> monthlyTripList = monthlyTrips.values.toList();
+        List<double> monthlyValueList = monthlyIncome.values.toList();
+
+        List<double> yearlyTripList = yearlyTrips.values.toList();
+        List<double> yearhlyValueList = yearlyIncome.values.toList();
+
+        List<double> lineChartData = dailyTripList;
+        List<double> barChartData = dailyValueList;
+        List<String> lineChartTitle = dateList;
+        List<String> barChartTitle = dateList;
+
+        if (_selectedLineCombobox == 'Day') {
+          lineChartData = dailyTripList;
+          lineChartTitle = dateList;
+        }
+        else if (_selectedLineCombobox == 'Month') {
+          lineChartData = monthlyTripList;
+          lineChartTitle = monthList;
+        }
+        else if (_selectedLineCombobox == 'Year') {
+          lineChartData = yearlyTripList;
+          lineChartTitle = yearList;
+        }
+
+        if (_selectedBarCombobox == 'Day') {
+          barChartData = dailyValueList;
+          barChartTitle = dateList;
+        }
+        else if (_selectedBarCombobox == 'Month') {
+          barChartData = monthlyValueList;
+          barChartTitle = monthList;
+        }
+        else if (_selectedBarCombobox == 'Year') {
+          barChartData = yearhlyValueList;
+          barChartTitle = yearList;
+        }
 
         return
           Column(
             children: [
+              DropdownButton<String>(
+                hint: Text('Select Item'),
+                value: _selectedLineCombobox,
+                onChanged: (String? newValue) {
+                  setState(() {
+                    _selectedLineCombobox = newValue!;
+                  });
+                },
+                items: comboboxSource.map((String item) {
+                  return DropdownMenuItem<String>(
+                    value: item,
+                    child: Text(item),
+                  );
+                }).toList(),
+              ),
+
               Center(
                 child: Container(
                   width: 1000,
@@ -90,10 +180,10 @@ class _TripsDataListState extends State<RevenueChart>
                   child: LineChart(
                     LineChartData(
                       minY: 0,
-                      maxY: tripList.reduce((currentMax, next) => currentMax > next ? currentMax : next) + 5,
+                      maxY: lineChartData.reduce((currentMax, next) => currentMax > next ? currentMax : next) + 5,
                       lineBarsData: [
                         LineChartBarData(
-                          spots: tripList.asMap().entries.map((entry) {
+                          spots: lineChartData.asMap().entries.map((entry) {
                             final index = entry.key;
                             final value = entry.value;
                             return FlSpot(index.toDouble(), value);
@@ -113,7 +203,7 @@ class _TripsDataListState extends State<RevenueChart>
                           margin: 10,
                           getTitles: (value) {
                             int index = value.toInt();
-                            return dateList[index];
+                            return lineChartTitle[index];
                           },
                         ),
                       ),
@@ -127,13 +217,29 @@ class _TripsDataListState extends State<RevenueChart>
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(0, 5, 0, 50),
                   child: Text(
-                    'Number of trips per day',
+                    'Number of trips per $_selectedLineCombobox',
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
+              ),
+
+              DropdownButton<String>(
+                hint: Text('Select Item'),
+                value: _selectedBarCombobox,
+                onChanged: (String? newValue) {
+                  setState(() {
+                    _selectedBarCombobox = newValue!;
+                  });
+                },
+                items: comboboxSource.map((String item) {
+                  return DropdownMenuItem<String>(
+                    value: item,
+                    child: Text(item),
+                  );
+                }).toList(),
               ),
 
               Center(
@@ -144,7 +250,7 @@ class _TripsDataListState extends State<RevenueChart>
                     BarChartData(
                       alignment: BarChartAlignment.spaceAround,
                       barTouchData: BarTouchData(enabled: true),
-                      maxY: valueList.reduce((currentMax, next) => currentMax > next ? currentMax : next) + 10,
+                      maxY: barChartData.reduce((currentMax, next) => currentMax > next ? currentMax : next) + 10,
                       titlesData: FlTitlesData(
                         leftTitles: SideTitles(
                             showTitles: true,
@@ -162,12 +268,12 @@ class _TripsDataListState extends State<RevenueChart>
                           margin: 10,
                           getTitles: (double value) {
                             int index = value.toInt();
-                            return dateList[index];
+                            return barChartTitle[index];
                           },
                         ),
                       ),
                       borderData: FlBorderData(show: true),
-                      barGroups: valueList
+                      barGroups: barChartData
                           .asMap()
                           .map(
                             (index, value) => MapEntry(
@@ -195,7 +301,7 @@ class _TripsDataListState extends State<RevenueChart>
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(0, 5, 0, 50),
                   child: Text(
-                    'Revenue by day (Unit: \$)',
+                    'Revenue by $_selectedBarCombobox (Unit: \$)',
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
