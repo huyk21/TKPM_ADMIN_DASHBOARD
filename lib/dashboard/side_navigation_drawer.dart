@@ -1,3 +1,4 @@
+import 'package:admin_dashboards/pages/drivers_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_admin_scaffold/admin_scaffold.dart';
@@ -14,7 +15,9 @@ class SideNavigationDrawer extends StatefulWidget {
 
 class _SideNavigationDrawerState extends State<SideNavigationDrawer> {
   static const String logoutRoute = '/logout'; // New logout route
+
   Widget chosenScreen = const DashboardPage();
+  String currentRoute = DashboardPage.id;  // Default route
 
   // Method to confirm logging out
   void showLogoutConfirmationDialog(BuildContext context) {
@@ -45,40 +48,50 @@ class _SideNavigationDrawerState extends State<SideNavigationDrawer> {
 
   // Perform the logout action
   void logOutUser(BuildContext context) {
-    // Clear any relevant state here
+    // Perform a mounted check before using the context
+    if (!mounted) return;
+
+    // Proceed with logging out
     print('User logged out. Clearing session data...');
 
-    // Close the dialog
-    Navigator.of(context).pop();
-
-    // Navigate to login page (adjust the route to your login page)
-    Navigator.of(context).pushReplacementNamed('/login');
-
+    // Safe to use context here because we checked if the widget is still mounted
+    Navigator.of(context).pop();  // Close the dialog
+    Navigator.of(context).pushReplacementNamed('/login');  // Navigate to login page
   }
 
-  void sendAdminTo(selectedPage) {
-    switch (selectedPage.route) {
-      case DashboardPage.id:
-        setState(() {
-          chosenScreen = const DashboardPage();
-        });
-        break;
+  void sendAdminTo(AdminMenuItem selectedPage) {
+    if (!mounted) return;  // Check if the widget is still mounted
 
-      case UsersPage.id:
-        setState(() {
-          chosenScreen = const UsersPage();
-        });
-        break;
-      case TripsPage.id:
-        setState(() {
-          chosenScreen = const TripsPage();
-        });
-        break;
-      case logoutRoute:
-        showLogoutConfirmationDialog(context); // Show logout confirmation dialog
-        break;
-    }
+    setState(() {
+      currentRoute = selectedPage.route!;  // Update the current route
+      switch (selectedPage.route) {
+        case DashboardPage.id:
+          setState(() {
+            chosenScreen = const DashboardPage();
+          });
+          break;
+        case UsersPage.id:
+          setState(() {
+            chosenScreen = const UsersPage();
+          });
+          break;
+        case DriversPage.id:
+          setState(() {
+            chosenScreen = const DriversPage();
+          });
+          break;
+        case TripsPage.id:
+          setState(() {
+            chosenScreen = const TripsPage();
+          });
+          break;
+        case logoutRoute:
+          showLogoutConfirmationDialog(context);  // Show logout confirmation dialog
+          break;
+      }
+    });
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -95,17 +108,24 @@ class _SideNavigationDrawerState extends State<SideNavigationDrawer> {
         ),
       ),
       sideBar: SideBar(
+        backgroundColor: Colors.white,  // Default background
+        activeBackgroundColor: Colors.white,
         items: const [
           AdminMenuItem(
             title: "Dashboard",
             route: DashboardPage.id,
             icon: CupertinoIcons.chart_bar_fill,
-          ),
 
+          ),
           AdminMenuItem(
             title: "Users",
             route: UsersPage.id,
             icon: CupertinoIcons.person_2_fill,
+          ),
+          AdminMenuItem(
+            title: "Drivers",
+            route: DriversPage.id,
+            icon: CupertinoIcons.person_3_fill,
           ),
           AdminMenuItem(
             title: "Trips",
@@ -118,10 +138,8 @@ class _SideNavigationDrawerState extends State<SideNavigationDrawer> {
             icon: Icons.logout,
           ),
         ],
-        selectedRoute: DashboardPage.id,
-        onSelected: (selectedPage) {
-          sendAdminTo(selectedPage);
-        },
+        selectedRoute: currentRoute, // Dynamically set selected route
+        onSelected: sendAdminTo,
         header: Container(
           height: 52,
           width: double.infinity,
